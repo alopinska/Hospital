@@ -21,27 +21,23 @@ namespace Hospital_View
         private Employee employee;
         private Hospital hospital;
 
-        //private ObservableCollection<Employee> _employees;
-        //public ObservableCollection<Employee> Employees
-        //{
-        //    get
-        //    {
-        //        return _employees;
-        //    }
-        //    set
-        //    {
-        //        _employees = value;
-        //        OnPropertyChanged("Employee");
-        //    }
-        //}
+        private ObservableCollection<Employee> _employees;
+        public ObservableCollection<Employee> Employees
+        {
+            get
+            {
+                return _employees;
+            }
+            set
+            {
+                _employees = value;
+                OnPropertyChanged("Employee");
+            }
+        }
 
         private void LoadDataToCollection()
         {
-
-            //foreach (var item in _Hospital.Staff)
-            //{
-            //    Employees.Add((Employee)item);
-            //}
+            Employees = new ObservableCollection<Employee>(_Hospital.Staff);            
         }
 
 
@@ -122,7 +118,7 @@ namespace Hospital_View
 
             employee = new Employee();
             hospital = new Hospital();
-            //LoadDataToCollection();
+            LoadDataToCollection();
         }
 
 

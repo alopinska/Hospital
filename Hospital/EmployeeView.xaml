@@ -37,7 +37,7 @@
                 <ComboBoxItem Content="pracownik administracyjny"/>
             </ComboBox>
             <TextBlock Grid.Column="1" Grid.Row="0" Text="PESEL:" Margin="5 0"/>
-            <TextBox x:Name="Pesel_TB" Grid.Column="1" Grid.Row="1" Height="30" Padding="3" Margin="5 0" MaxLength="11" PreviewTextInput="OnlyNumbersAllowed"/>
+            <TextBox Text="{Binding Employee.PESEL}" x:Name="Pesel_TB" Grid.Column="1" Grid.Row="1" Height="30" Padding="3" Margin="5 0" MaxLength="11" PreviewTextInput="OnlyNumbersAllowed"/>
             <TextBlock Grid.Column="0" Grid.Row="2" Text="Specjalizacja:" Margin="5 0"/>
             <ComboBox x:Name="Specialization_CB" Grid.Column ="0" Grid.Row="3" Height="30" Margin="5 0" Padding="3">
                 <ComboBoxItem Content="chirurg"/>
@@ -67,7 +67,17 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="Cancel_Button" Grid.Column="0" Height="30" Margin="15 10" Content="Anuluj" Click="Cancel_ButtonClick" />
-            <Button x:Name="Confirm_Button" Grid.Column="2" Height="30" Margin="15 10" Content="Zatwierdź" Click="Confirm_ButtonClick" />
+            <Button x:Name="Confirm_Button" Grid.Column="2" Height="30" Margin="15 10" Content="Zatwierdź" Click="Confirm_ButtonClick">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsCreatingNewEmployee}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button Grid.Column="1" Height="30" Margin="15 10" Content="Usuń dane z systemu" />
         </Grid>
 

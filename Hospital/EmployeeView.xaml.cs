@@ -22,10 +22,15 @@ namespace Hospital_View
     public partial class EmployeeView : Window
     {
         ViewModel _viewModel;
-        public EmployeeView(ViewModel vm)
+        EmployeeViewModel _employeeViewModel;
+
+        public EmployeeView(ViewModel viewModel, EmployeeViewModel employeeViewModel = null)
         {
             InitializeComponent();
-            this._viewModel = vm;            
+            _viewModel = viewModel;
+            if (employeeViewModel == null)
+                employeeViewModel = new EmployeeViewModel();
+            this.DataContext = _employeeViewModel = employeeViewModel;            
         }
         
         private void OnlyNumbersAllowed(object sender, TextCompositionEventArgs e)
@@ -41,10 +46,12 @@ namespace Hospital_View
         
         private void Confirm_ButtonClick(object sender, RoutedEventArgs e)
         {
-            var added = _viewModel.AddNewEmployee(this.Name_TB.Text, this.Surname_TB.Text, this.JobTitle_CB.Text, long.Parse(this.Pesel_TB.Text),
-                this.Specialization_CB.Text, long.Parse(this.LicNumber_TB.Text), this.Login_TB.Text, this.Password_TB.Text,
-                (bool)this.IsAdmin_CheckBox.IsChecked);            
-            MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);
+            //var added = _viewModel.AddNewEmployee(this.Name_TB.Text, this.Surname_TB.Text, this.JobTitle_CB.Text, long.Parse(this.Pesel_TB.Text),
+            //    this.Specialization_CB.Text, long.Parse(this.LicNumber_TB.Text), this.Login_TB.Text, this.Password_TB.Text,
+            //    (bool)this.IsAdmin_CheckBox.IsChecked);            
+            //MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            _viewModel.Employees.Add(_employeeViewModel.Employee);
             
         }
 

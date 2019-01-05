@@ -21,7 +21,7 @@ namespace Hospital_Data
 
         public Hospital()
         {
-            //Staff = DataDispatcher.DeserializeData();
+            Staff = DataDispatcher.DeserializeData<List<Employee>>();
         }
 
         

@@ -11,13 +11,13 @@ namespace Hospital_Data
     [Serializable]
     public class Employee : INotifyPropertyChanged
     {
-        public string name { get; set; }
-        public string surname { get; set; }
-        public long pesel { get; set; }
-        public string login { get; set; }
-        public string password { get; set; }
-        public string jobTitle { get; set; }
-        public bool isAdmin { get; set; }
+        private string name { get; set; }
+        private string surname { get; set; }
+        private long pesel { get; set; }
+        private string login { get; set; }
+        private string password { get; set; }
+        private string jobTitle { get; set; }
+        private bool isAdmin { get; set; }
 
         #region Properties
         public string Name

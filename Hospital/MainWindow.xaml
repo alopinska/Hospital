@@ -8,10 +8,7 @@
         mc:Ignorable="d"
         Title="" WindowStyle="ThreeDBorderWindow">
     
-    <Window.DataContext>
-        <local:ViewModel/>
-    </Window.DataContext>
-
+    
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
             <GradientStop Color="#FFDADCDC" Offset="0.011"/>
@@ -43,7 +40,7 @@
                       Grid.Row="2" 
                       Grid.RowSpan="5" 
                       Margin="3 3" 
-                      ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"                   
+                      ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Path=Employees}"                   
                       SelectionMode="Single" 
                       IsManipulationEnabled="True">                
                 <ListView.View>

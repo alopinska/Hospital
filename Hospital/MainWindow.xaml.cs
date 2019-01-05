@@ -26,8 +26,8 @@ namespace Hospital_View
         {
             InitializeComponent();            
             this._viewModel = vm;
-            this.DataContext = this;
-            this.listView.DataContext = _viewModel._Hospital.Staff;
+            this.DataContext = _viewModel;
+           
             
         }
 
