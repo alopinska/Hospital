@@ -1,0 +1,79 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Hospital_View"
+        xmlns:Hospital_Data="clr-namespace:Hospital_Data;assembly=Hospital_Data" x:Class="Hospital_View.MainWindow"
+        mc:Ignorable="d"
+        Title="" WindowStyle="ThreeDBorderWindow">
+    
+    <Window.DataContext>
+        <local:ViewModel/>
+    </Window.DataContext>
+
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+            <GradientStop Color="#FFDADCDC" Offset="0.011"/>
+            <GradientStop Color="#FF6F9392" Offset="0.851"/>
+        </LinearGradientBrush>
+    </Window.Background>   
+
+    <DockPanel Margin="5">
+
+        <Grid Margin="5 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="0.4*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row ="0" Grid.Column="0" FontFamily="Imprint MT Shadow" FontSize="16"><Run Text="Wirtualny Szpital"/><LineBreak/><Run Text="im. Solidnie Potłuczonych"/><LineBreak/></TextBlock>
+            <Button x:Name="Logout_Button" Grid.Column="1" MaxHeight="40" Width="90" Margin="15 5" Content="Wyloguj" Background="#FF6F9392" FontWeight="Bold" FontFamily="Arial Black" HorizontalAlignment="Right" Click="Logout_ButtonClick"/>
+            <ListView x:Name="listView" 
+                      Grid.Column="0" 
+                      Grid.Row="2" 
+                      Grid.RowSpan="5" 
+                      Margin="3 3" 
+                      ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"                   
+                      SelectionMode="Single" 
+                      IsManipulationEnabled="True">                
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="100" Header="Imię" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="100" Header="Nazwisko" DisplayMemberBinding="{Binding Surname}"/>
+                        <GridViewColumn Width="100" Header="Stanowisko" DisplayMemberBinding="{Binding JobTitle}"/>
+                        <GridViewColumn Width="100" Header="Specjalizacja" DisplayMemberBinding="{Binding Specialization}"/>
+                        <GridViewColumn Width="100" Header="PESEL" DisplayMemberBinding="{Binding PESEL}"/>
+                        <GridViewColumn Width="100" Header="PWZ" DisplayMemberBinding="{Binding LicenceNumber}"/>
+                        <GridViewColumn Width="100" Header="Login" DisplayMemberBinding="{Binding Login}"/>
+                        <GridViewColumn Width="100" Header="Hasło" DisplayMemberBinding="{Binding Password}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <StatusBar Margin="5 0" Grid.Column="1" Grid.Row="7" Background="{x:Null}"/>
+            <Calendar Grid.Column="1" Grid.Row="2" Margin="3 3"/>
+            <Label Margin="5 0" Padding="0" Content="Nasz Zespół:" Grid.Column="0" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
+            <Label Margin="15 0" Padding="0" Content="Dyżury:" Grid.Column="1" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
+            <Label Margin="15 0" Padding="0" Content="Wyświetl dyżury dla:" Grid.Column="1" Grid.Row="3" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
+            <ComboBox Height ="30" Width="190" Margin="5 5" Grid.Column="1" Grid.Row="4"/>
+            <StackPanel Margin="5 5" Grid.Column="1" Grid.Row="5">
+                <Button x:Name="Add_Button" Height="30" Width="140" Content="Nowy pracownik" Margin="5 10 5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Add_ButtonClick"/>
+                <Button Height="30" Width="140" Content="Edycja danych" Margin="5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Button Height="30" Width="140" Content="Usuń dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Button Height="30" Width="140" Content="Dodaj dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+
+
+</Window>

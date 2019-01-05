@@ -3,3 +3,8 @@
 ################################################################################
 
 /Hospital_Data/obj/Debug
+/.vs
+/Test/bin/Debug
+/Test/obj
+/Hospital/bin/Debug
+/Hospital/obj
