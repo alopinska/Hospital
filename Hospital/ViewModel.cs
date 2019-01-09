@@ -10,18 +10,16 @@ using System.Threading.Tasks;
 
 namespace Hospital_View
 {
-
-    public class ViewModel : INotifyPropertyChanged
-    {
-
-        //private Nurse nurse;
-        //private Physician physician;
-        //private Duty duty;
-
+    
+    public class ViewModel : BaseViewModel, INotifyPropertyChanged
+    {       
+        private Duty duty;
         private Employee employee;
         private Hospital hospital;
+        public bool IsLoggedUserAdmin { get; set; } = true;
+        public bool IsEditModeOff { get; set; }
 
-        private ObservableCollection<Employee> _employees;
+        private ObservableCollection<Employee> _employees;         
         public ObservableCollection<Employee> Employees
         {
             get
@@ -35,15 +33,25 @@ namespace Hospital_View
             }
         }
 
-        private void LoadDataToCollection()
+        //private ObservableCollection<string> fullNames;
+        //public ObservableCollection<Employee> FullNames
+        //{
+        //    get { return fullNames; }
+        //    set
+        //    {
+        //        fullNames = value;
+        //        OnPropertyChanged("FullNames");
+        //    }
+        //}
+        
+
+        private void LoadDataToDisplay()
         {
-            Employees = new ObservableCollection<Employee>(_Hospital.Staff);            
+            Employees = new ObservableCollection<Employee>(_Hospital.Staff);
+            
         }
 
-
-
-
-        #region Model properties
+        #region Properties
         public Employee _Employee
         {
             get
@@ -55,33 +63,7 @@ namespace Hospital_View
                 employee = value;
                 OnPropertyChanged("_Employee");
             }
-        }
-
-        //public Nurse _Nurse
-        //{
-        //    get
-        //    {
-        //        return nurse;
-        //    }
-        //    set
-        //    {
-        //        nurse = value;
-        //        OnPropertyChanged("_Nurse");
-        //    }
-        //}
-
-        //public Physician _Physician
-        //{
-        //    get
-        //    {
-        //        return physician;
-        //    }
-        //    set
-        //    {
-        //        physician = value;
-        //        OnPropertyChanged("_Physician");
-        //    }
-        //}
+        }       
         
         public Hospital _Hospital
         {
@@ -96,83 +78,81 @@ namespace Hospital_View
             }
         }
 
-        //public Duty _Duty
-        //{
-        //    get
-        //    {
-        //        return duty;
-        //    }
-        //    set
-        //    {
-        //        duty = value;
-        //        OnPropertyChanged("_Duty");
-        //    }
-        //}
+        public Duty _Duty
+        {
+            get
+            {
+                return duty;
+            }
+            set
+            {
+                duty = value;
+                OnPropertyChanged("_Duty");
+            }
+        }
         #endregion
 
         public ViewModel()
-        {
-            //nurse = new Nurse();
-            //physician = new Physician();
+        {            
             //duty = new Duty();
-
             employee = new Employee();
             hospital = new Hospital();
-            LoadDataToCollection();
+            LoadDataToDisplay();
+            
         }
-
-
-
-
 
         public bool VerifyPasswordAndLogin(string login, string password)
         {
 
             return true;
-            //return this._Hospital.Staff.Where(x => x.Login == login)
-            //    .Where(x => x.Password == password).Any() ? true : false;
+            //if(this._Hospital.Staff.Where(x => x.Login == login)
+            //  .Where(x => x.Password == password).Any())
+            //{
+            //    var _empl = this._Hospital.Staff.Where(x => x.Login == login)
+            //  .Where(x => x.Password == password).FirstOrDefault();
+
+            //    this.IsLoggedUserAdmin = _empl.IsAdmin ? true : false;
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}                
         }
 
         public void SerializeAllData()
         {
-            DataDispatcher.SerializeData(this._Hospital.Staff);
+            this._Hospital.Staff = this.Employees.ToList();
+            this._Hospital.SerializeData();
         }
 
-        //public void DeserializeData()
+        
+
+        //public Employee AddNewEmployee(string _name, string _surname, string _jobTitle, long _pesel, string _specialization, int _licNumber,
+        //    string _login, string _password, bool _isAdmin)
         //{
-        //    this._Hospital.DeserializeData();
+        //    switch (_jobTitle)
+        //    {
+        //        case "lekarz":
+        //            Employee physician = new Physician(_name, _surname, _pesel, _login,
+        //                _password, _jobTitle, _isAdmin, _specialization, _licNumber);
+        //            _Hospital.Staff.Add(physician);
+        //            return physician;
+
+        //        case "pielęgniarka":
+        //            Employee nurse = new Nurse(_name, _surname, _pesel, _login, _password, _jobTitle, _isAdmin);
+        //            _Hospital.Staff.Add(nurse);
+        //            return nurse;
+
+        //        default:
+        //            Employee employee = new Employee(_name, _surname, _pesel, _login, _password, _jobTitle, _isAdmin);
+        //            _Hospital.Staff.Add(employee);
+        //            return employee;
+        //    }
         //}
 
-        public Employee AddNewEmployee(string _name, string _surname, string _jobTitle, long _pesel, string _specialization, long _licNumber,
-            string _login, string _password, bool _isAdmin)
-        {
-            switch (_jobTitle)
-            {
-                case "lekarz":
-                    Employee physician = new Physician(_name, _surname, _pesel, _login,
-                        _password, _jobTitle, _isAdmin, _specialization, _licNumber);
-                    _Hospital.Staff.Add(physician);
-                    return physician;
-
-                case "pielęgniarka":
-                    Employee nurse = new Nurse(_name, _surname, _pesel, _login, _password, _jobTitle, _isAdmin);
-                    _Hospital.Staff.Add(nurse);
-                    return nurse;
-
-                default:
-                    Employee employee = new Employee(_name, _surname, _pesel, _login, _password, _jobTitle, _isAdmin);
-                    _Hospital.Staff.Add(employee);
-                    return employee;
-            }
-        }
-
        
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string _property = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_property));
-        }
+        
 
     }
 

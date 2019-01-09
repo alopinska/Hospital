@@ -24,15 +24,23 @@ namespace Hospital_View
         ViewModel _viewModel;
         EmployeeViewModel _employeeViewModel;
 
-        public EmployeeView(ViewModel viewModel, EmployeeViewModel employeeViewModel = null)
+        public EmployeeView(ViewModel viewModel, Employee employee = null)
         {
             InitializeComponent();
             _viewModel = viewModel;
-            if (employeeViewModel == null)
-                employeeViewModel = new EmployeeViewModel();
-            this.DataContext = _employeeViewModel = employeeViewModel;            
+            if (employee == null)
+            {
+                _employeeViewModel = new EmployeeViewModel(this._viewModel.IsEditModeOff);
+            }
+            else
+            {
+                _employeeViewModel = new EmployeeViewModel(this._viewModel.IsEditModeOff, employee);
+            }
+            this.DataContext = _employeeViewModel;
+            SetBindingForControls(this._employeeViewModel.TargetObjectType);
+            SetOptionOfPhysicianPropertiesEdit();
         }
-        
+
         private void OnlyNumbersAllowed(object sender, TextCompositionEventArgs e)
         {
             var regex = new Regex("[^0-9.-]+");
@@ -43,31 +51,121 @@ namespace Hospital_View
             var regex = new Regex("[^a-zA-Z łćśńźżóęą]");
             e.Handled = regex.IsMatch(e.Text);
         }
-        
-        private void Confirm_ButtonClick(object sender, RoutedEventArgs e)
-        {
-            //var added = _viewModel.AddNewEmployee(this.Name_TB.Text, this.Surname_TB.Text, this.JobTitle_CB.Text, long.Parse(this.Pesel_TB.Text),
-            //    this.Specialization_CB.Text, long.Parse(this.LicNumber_TB.Text), this.Login_TB.Text, this.Password_TB.Text,
-            //    (bool)this.IsAdmin_CheckBox.IsChecked);            
-            //MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            _viewModel.Employees.Add(_employeeViewModel.Employee);
-            
+        private void ConfirmAdd_ButtonClick(object sender, RoutedEventArgs e)
+        {           
+            switch (this._employeeViewModel.TargetObjectType)
+            {
+                case "lekarz":
+                    _viewModel.Employees.Add(this._employeeViewModel.Physician);
+                    break;
+                case "pielęgniarka":
+                    _viewModel.Employees.Add(this._employeeViewModel.Nurse);
+                    break;
+                default:
+                    _viewModel.Employees.Add(this._employeeViewModel.Employee);
+                    break;
+            }
+            MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);
+            //dodać walidację : taki pracownik już istnieje, by edytować jego dane wybierz w widoku głównym... blabla                      
+        }
+
+        private void ConfirmEdit_Button_Click(object sender, RoutedEventArgs e)
+        {
+            //walidacja: czy cokolwiek się zmieniło?
+            //przeładować aktualnego jako nowego, usunąć starego
+            this._viewModel.Employees.Remove(this._viewModel.Employees.Where(x => x.PESEL == this._employeeViewModel.EmployeeBackup.PESEL).Single());
+            ConfirmAdd_ButtonClick(this, e);
+            //this._viewModel.Employees.Add(this._employeeViewModel.Employee);
         }
 
         private void Cancel_ButtonClick(object sender, RoutedEventArgs e)
         {
+            if (this._viewModel.IsEditModeOff == false)
+            {     
+                //walidacja: czy cokolwiek się zmieniło?
+                //jeśli tak - pytajka, czy zachować wprowadzone zmiany
+                //tak: confirm edit, nie: poniższe
+                this._employeeViewModel.Employee = this._employeeViewModel.EmployeeBackup;
+            }
             this.Close();
         }
 
         private void JobTitleCB_DropDownClosed(object sender, EventArgs e)
         {
-            if(JobTitle_CB.SelectedValue.ToString() == "lekarz")
-            {
-                this.Specialization_CB.IsEnabled = this.LicNumber_TB.IsEnabled = true;
-            }
+            this._employeeViewModel.TargetObjectType = this.JobTitle_CB.Text; // tutaj jest problem z przejściem z lekarza na cokolwiek innego
+            this._employeeViewModel.ReorganizeDataAccordingToEmployeeType(this._employeeViewModel.TargetObjectType, this._employeeViewModel.Employee);
+            SetBindingForControls(this._employeeViewModel.TargetObjectType);
+            SetOptionOfPhysicianPropertiesEdit();
         }
 
-        
+        private void Delete_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            switch(MessageBox.Show("Ta operacja spowoduje trwałe usunięcie danych pracownika z systemu. Czy kontynuować?", "Usuwanie danych", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            {
+                case MessageBoxResult.Yes:
+                    this._viewModel.Employees.Remove(this._viewModel.Employees
+                        .Where(x => x.PESEL == this._employeeViewModel.EmployeeBackup.PESEL).Single());
+                    Reset_ButtonClick(this, e);
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }            
+        }
+
+        private void Reset_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            this._employeeViewModel.Employee = new Employee();
+            SetBindingForControls(this._employeeViewModel.TargetObjectType = null);
+        }
+
+        private void SetOptionOfPhysicianPropertiesEdit()
+        {
+            this.Specialization_CB.IsEnabled = this.LicNumber_TB.IsEnabled =
+                this._employeeViewModel.TargetObjectType == "lekarz" ? true : false;            
+        }
+
+        private void SetBindingForControls(string mode = null)
+        {
+            string targetObjectType = mode == null ? " " : mode;
+
+            BindingOperations.SetBinding(this.Name_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "Name"));
+            BindingOperations.SetBinding(this.Surname_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "Surname"));
+            BindingOperations.SetBinding(this.JobTitle_CB, ComboBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "JobTitle"));
+            BindingOperations.SetBinding(this.Pesel_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "PESEL"));
+            BindingOperations.SetBinding(this.Login_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "Login"));
+            BindingOperations.SetBinding(this.Password_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "Password"));
+            BindingOperations.SetBinding(this.IsAdmin_CheckBox, CheckBox.IsCheckedProperty, AddNewBindingWithOptions(targetObjectType, "IsAdmin"));
+            if (targetObjectType == "lekarz")
+            {
+                BindingOperations.SetBinding(this.Specialization_CB, ComboBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "Specialization"));
+                BindingOperations.SetBinding(this.LicNumber_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "LicenceNumber"));
+            }
+            else
+            {
+                BindingOperations.ClearAllBindings(this.Specialization_CB);
+                BindingOperations.ClearAllBindings(this.LicNumber_TB);
+            }
+        }
+        private Binding AddNewBindingWithOptions(string mode, string propertyPath)
+        {
+            Binding bd = new Binding();
+            switch (mode)
+            {
+                case "lekarz":
+                    bd.Source = _employeeViewModel.Physician;
+                    break;
+                case "pielęgniarka":
+                    bd.Source = _employeeViewModel.Nurse;
+                    break;
+                default:
+                    bd.Source = _employeeViewModel.Employee;
+                    break;
+            }
+            bd.Path = new PropertyPath(propertyPath);
+            bd.Mode = BindingMode.TwoWay;
+            bd.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            return bd;
+        }
     }
 }

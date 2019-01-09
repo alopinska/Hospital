@@ -16,15 +16,29 @@ namespace Hospital_Data
     [Serializable]
     public class Hospital : INotifyPropertyChanged
     {
-        public List<Employee> Staff = new List<Employee>();     
+        private List<Employee> staff = new List<Employee>();
+        public List<Employee> Staff
+        {
+            get { return staff; }
+            set
+            {
+                staff = value;
+                OnPropertyChanged("Staff");
+            }
+        } 
 
 
         public Hospital()
         {
-            Staff = DataDispatcher.DeserializeData<List<Employee>>();
+            Staff = DataDispatcher.DeserializeData();
         }
 
-        
+        public void SerializeData()
+        {
+            DataDispatcher.SerializeData(this.Staff);
+        }
+
+        [field: NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;  
 
         private void OnPropertyChanged(string _property)

@@ -57,16 +57,29 @@
                 </ListView.View>
             </ListView>
             <StatusBar Margin="5 0" Grid.Column="1" Grid.Row="7" Background="{x:Null}"/>
-            <Calendar Grid.Column="1" Grid.Row="2" Margin="3 3"/>
+            <Calendar x:Name="calendarView" Grid.Column="1" Grid.Row="2" Margin="3 3" SelectedDatesChanged="SelectedDate_Click"/>
             <Label Margin="5 0" Padding="0" Content="Nasz Zespół:" Grid.Column="0" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
             <Label Margin="15 0" Padding="0" Content="Dyżury:" Grid.Column="1" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
             <Label Margin="15 0" Padding="0" Content="Wyświetl dyżury dla:" Grid.Column="1" Grid.Row="3" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
-            <ComboBox Height ="30" Width="190" Margin="5 5" Grid.Column="1" Grid.Row="4"/>
+            <ComboBox Height ="30" 
+                      Width="190" Margin="5 5" 
+                      Grid.Column="1" Grid.Row="4"
+                      ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Path=Employees}"
+                      DisplayMemberPath="FullName"/>
             <StackPanel Margin="5 5" Grid.Column="1" Grid.Row="5">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoggedUserAdmin}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
                 <Button x:Name="Add_Button" Height="30" Width="140" Content="Nowy pracownik" Margin="5 10 5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Add_ButtonClick"/>
-                <Button Height="30" Width="140" Content="Edycja danych" Margin="5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <Button Height="30" Width="140" Content="Usuń dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <Button Height="30" Width="140" Content="Dodaj dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Button x:Name="Edit_Button" Height="30" Width="140" Content="Edycja danych" Margin="5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Edit_ButtonClick"/>
+                <Button x:Name="deleteDuty_Button" Height="30" Width="140" Content="Usuń dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Button x:Name="addDuty_Button" Height="30" Width="140" Content="Dodaj dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
 
             </StackPanel>
         </Grid>

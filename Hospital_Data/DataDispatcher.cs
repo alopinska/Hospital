@@ -14,26 +14,26 @@ namespace Hospital_Data
     public static class DataDispatcher
     {
         static string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "StaffData.dat";
-        public static T DeserializeData<T>()
+        public static List<Employee> DeserializeData()
         {
-            
+            var list = new List<Employee>();
             BinaryFormatter bf = new BinaryFormatter();
 
             try
             {                
                 using (Stream str = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
-                    return (T)bf.Deserialize(str);
+                    list = (List<Employee>)bf.Deserialize(str);
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Błąd deserializacji", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            return default(T);
+            return list;
         }
 
-        public static void SerializeData<T>(T variable)
+        public static void SerializeData(List<Employee> list)
         {
             BinaryFormatter bf = new BinaryFormatter();
 
@@ -41,7 +41,7 @@ namespace Hospital_Data
             {
                 using (Stream str = new FileStream(path, FileMode.Create, FileAccess.Write))
                 {
-                    bf.Serialize(str, variable);
+                    bf.Serialize(str, list);
                 }
             }
             catch (Exception e)
@@ -50,9 +50,9 @@ namespace Hospital_Data
             }
         }  
         
-        public static Employee CloneBySerialization(Employee emp)
+        public static T CloneBySerialization<T>(T emp)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Employee));
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
 
             string serializedObject;
             using (StringWriter textWriter = new StringWriter())
@@ -61,7 +61,7 @@ namespace Hospital_Data
                 serializedObject = textWriter.ToString();
             }
             StringReader strReader = new StringReader(serializedObject);
-            return (Employee)xmlSerializer.Deserialize(strReader);
+            return (T)xmlSerializer.Deserialize(strReader);
         }      
 
 

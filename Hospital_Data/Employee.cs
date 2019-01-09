@@ -11,13 +11,14 @@ namespace Hospital_Data
     [Serializable]
     public class Employee : INotifyPropertyChanged
     {
-        private string name { get; set; }
-        private string surname { get; set; }
-        private long pesel { get; set; }
-        private string login { get; set; }
-        private string password { get; set; }
-        private string jobTitle { get; set; }
-        private bool isAdmin { get; set; }
+        private string name;
+        private string surname;
+        private long pesel;
+        private string login;
+        private string password;
+        private string jobTitle;
+        private bool isAdmin;        
+        
 
         #region Properties
         public string Name
@@ -28,7 +29,7 @@ namespace Hospital_Data
                 name = value;
                 OnPropertyChanged("Name");
             }
-        }        
+        }
         public string Surname
         {
             get { return surname; }
@@ -83,24 +84,45 @@ namespace Hospital_Data
                 OnPropertyChanged("IsAdmin");
             }
         }
-#endregion
+
+        public string FullName
+        {
+            get
+            {
+                return this.name + " " + this.surname;
+            }            
+        }
+       
+        #endregion
 
         public Employee()
         {
 
         }
 
-        public Employee(string _name, string _surname, long _pesel, string _login, string _password, string _jobtitle, bool _isAdmin)
+        //public Employee(string _name, string _surname, long _pesel, string _login, string _password, string _jobtitle, bool _isAdmin)
+        //{
+        //    this.name = _name;
+        //    this.surname = _surname;
+        //    this.pesel = _pesel;
+        //    this.login = _login;
+        //    this.password = _password;
+        //    this.jobTitle = _jobtitle;
+        //    this.isAdmin = _isAdmin;
+        //}
+        public Employee(Employee _employee)
         {
-            this.Name = _name;
-            this.Surname = _surname;
-            this.PESEL = _pesel;
-            this.Login = _login;
-            this.Password = _password;
-            this.JobTitle = _jobtitle;
-            this.IsAdmin = _isAdmin;
+            this.name = _employee.Name;
+            this.surname = _employee.Surname;
+            this.pesel = _employee.PESEL;
+            this.login = _employee.Login;
+            this.password = _employee.Password;
+            this.jobTitle = _employee.JobTitle;
+            this.isAdmin = _employee.IsAdmin;
+
         }
 
+        [field: NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string _property = null)
         {

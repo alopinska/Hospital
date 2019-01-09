@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hospital_Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -24,11 +25,11 @@ namespace Hospital_View
         private ViewModel _viewModel;
         public MainWindow(ViewModel vm)
         {
-            InitializeComponent();            
+            InitializeComponent();
             this._viewModel = vm;
             this.DataContext = _viewModel;
-           
-            
+            this.deleteDuty_Button.IsEnabled = this.addDuty_Button.IsEnabled = false;
+
         }
 
         private void Exit_ButtonClick(object sender, RoutedEventArgs e)
@@ -48,14 +49,32 @@ namespace Hospital_View
             var entryView = new Entry();
             this.Close();
             entryView.Show();
-            
+
         }
 
         private void Add_ButtonClick(object sender, RoutedEventArgs e)
         {
+            this._viewModel.IsEditModeOff = true;
             var employeeData = new EmployeeView(this._viewModel);
             employeeData.ShowDialog();
-            
+
+        }
+
+        private void Edit_ButtonClick(object sender, RoutedEventArgs e)
+        {
+
+            this._viewModel.IsEditModeOff = false;            
+            var employeeData = new EmployeeView(this._viewModel, this.listView.SelectedItem as Employee);
+            employeeData.ShowDialog();
+
+
+        }
+
+       
+
+        private void SelectedDate_Click(object sender, SelectionChangedEventArgs e)
+        {
+            this.deleteDuty_Button.IsEnabled = this.addDuty_Button.IsEnabled = true;            
         }
     }
 }
