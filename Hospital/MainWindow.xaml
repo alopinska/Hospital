@@ -7,14 +7,19 @@
         xmlns:Hospital_Data="clr-namespace:Hospital_Data;assembly=Hospital_Data" x:Class="Hospital_View.MainWindow"
         mc:Ignorable="d"
         Title="" WindowStyle="ThreeDBorderWindow">
-    
-    
+
+
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
             <GradientStop Color="#FFDADCDC" Offset="0.011"/>
             <GradientStop Color="#FF6F9392" Offset="0.851"/>
         </LinearGradientBrush>
-    </Window.Background>   
+    </Window.Background>
+    <Window.Resources>
+        <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+    </Window.Resources>
 
     <DockPanel Margin="5">
 
@@ -38,11 +43,11 @@
             <ListView x:Name="listView" 
                       Grid.Column="0" 
                       Grid.Row="2" 
-                      Grid.RowSpan="5" 
+                      Grid.RowSpan="4" 
                       Margin="3 3" 
                       ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Path=Employees}"                   
                       SelectionMode="Single" 
-                      IsManipulationEnabled="True">                
+                      IsManipulationEnabled="True" SelectionChanged="ListSelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Width="100" Header="Imię" DisplayMemberBinding="{Binding Name}"/>
@@ -55,17 +60,60 @@
                         <GridViewColumn Width="100" Header="Hasło" DisplayMemberBinding="{Binding Password}"/>
                     </GridView>
                 </ListView.View>
+                <ListView.Style>
+                    <Style TargetType="ListView">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoggedUserAdmin}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.Style>
             </ListView>
-            <StatusBar Margin="5 0" Grid.Column="1" Grid.Row="7" Background="{x:Null}"/>
-            <Calendar x:Name="calendarView" Grid.Column="1" Grid.Row="2" Margin="3 3" SelectedDatesChanged="SelectedDate_Click"/>
+            <ListView x:Name="listViewDefault" 
+                      Grid.Column="0" 
+                      Grid.Row="2" 
+                      Grid.RowSpan="4" 
+                      Margin="3 3" 
+                      ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Path=Employees}"                   
+                      SelectionMode="Single" 
+                      IsManipulationEnabled="True" SelectionChanged="ListSelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="100" Header="Imię" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="100" Header="Nazwisko" DisplayMemberBinding="{Binding Surname}"/>
+                        <GridViewColumn Width="100" Header="Stanowisko" DisplayMemberBinding="{Binding JobTitle}"/>
+                        <GridViewColumn Width="100" Header="Specjalizacja" DisplayMemberBinding="{Binding Specialization}"/>
+                    </GridView>
+                </ListView.View>
+                <ListView.Style>
+                    <Style TargetType="ListView">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoggedUserAdmin}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.Style>
+            </ListView>
+            <TextBlock x:Name="statusTextBlock" Margin="5 0" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Background="{x:Null}"/>
+            <ListView x:Name="dutiesListView" 
+                      Grid.Column="1"
+                      Grid.Row="2"
+                      Grid.RowSpan="3"
+                      Margin="3 3"                      
+                      ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Path=Duties}"
+                      SelectionMode="Single"                      
+                      IsManipulationEnabled="True" SelectionChanged="DutySelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                        <GridViewColumn DisplayMemberBinding="{Binding DateStringFormat}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
             <Label Margin="5 0" Padding="0" Content="Nasz Zespół:" Grid.Column="0" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
-            <Label Margin="15 0" Padding="0" Content="Dyżury:" Grid.Column="1" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
-            <Label Margin="15 0" Padding="0" Content="Wyświetl dyżury dla:" Grid.Column="1" Grid.Row="3" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
-            <ComboBox Height ="30" 
-                      Width="190" Margin="5 5" 
-                      Grid.Column="1" Grid.Row="4"
-                      ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged, Mode=OneWay, Path=Employees}"
-                      DisplayMemberPath="FullName"/>
+            <Label Margin="5 0" Padding="0" ContentStringFormat="Dyżury: {0}" Content="{Binding Path=SelectedEmployee.FullName}" Grid.Column="1" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
+
             <StackPanel Margin="5 5" Grid.Column="1" Grid.Row="5">
                 <StackPanel.Style>
                     <Style TargetType="StackPanel">
@@ -76,11 +124,12 @@
                         </Style.Triggers>
                     </Style>
                 </StackPanel.Style>
-                <Button x:Name="Add_Button" Height="30" Width="140" Content="Nowy pracownik" Margin="5 10 5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Add_ButtonClick"/>
-                <Button x:Name="Edit_Button" Height="30" Width="140" Content="Edycja danych" Margin="5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Edit_ButtonClick"/>
-                <Button x:Name="deleteDuty_Button" Height="30" Width="140" Content="Usuń dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <Button x:Name="addDuty_Button" Height="30" Width="140" Content="Dodaj dyżur" Margin="5 5" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-
+                <Label Margin="15 0" Content="Dodaj dyżur:" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" />
+                <DatePicker x:Name="addDuty_dtPicker" Height="25" Width="140" CalendarClosed="DatePickerClosed"/>
+                <Button x:Name="deleteDuty_Button" Height="25" Width="140" Content="Usuń dyżur z listy" Margin="5 5 5 10" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Label Margin="15 0" Content="Zarządzanie danymi personelu:" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" />
+                <Button x:Name="Add_Button" Height="25" Width="140" Content="Nowy pracownik" Margin="5 5 5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Add_ButtonClick"/>
+                <Button x:Name="Edit_Button" Height="25" Width="140" Content="Edycja danych" Margin="5 5 5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Edit_ButtonClick"/>
             </StackPanel>
         </Grid>
     </DockPanel>

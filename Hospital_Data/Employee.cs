@@ -17,7 +17,7 @@ namespace Hospital_Data
         private string login;
         private string password;
         private string jobTitle;
-        private bool isAdmin;        
+        private bool isAdmin;      
         
 
         #region Properties
@@ -84,14 +84,15 @@ namespace Hospital_Data
                 OnPropertyChanged("IsAdmin");
             }
         }
-
         public string FullName
         {
             get
             {
-                return this.name + " " + this.surname;
-            }            
+                return string.Format("{0} {1}", this.name, this.surname);
+            }
         }
+
+        
        
         #endregion
 

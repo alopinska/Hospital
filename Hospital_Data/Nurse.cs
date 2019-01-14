@@ -24,12 +24,7 @@ namespace Hospital_Data
         public Nurse()
         {
 
-        }
-        //public Nurse (string _name, string _surname, long _pesel, string _login, string _password, string _jobtitle, bool _isAdmin) 
-        //    : base (_name, _surname, _pesel, _login, _password, _jobtitle, _isAdmin)
-        //{
-            
-        //}
+        }    
 
         public Nurse(Nurse nurse) : base(nurse)
         {
@@ -38,6 +33,15 @@ namespace Hospital_Data
         public Nurse(Employee _employee) : base(_employee)
         {
 
+        }
+        public void AddDuty(DateTime date)
+        {
+            this.Duties.Add(new Duty(date));
+        }
+
+        public void RemoveDuty(DateTime date)
+        {
+            this.Duties.Remove(Duties.Where(x => x.Date == date).Single());
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hospital_Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,8 +36,10 @@ namespace Hospital_View
         private void Confirm_ButtonClick(object sender, RoutedEventArgs e)
         {
            if(_viewModel.VerifyPasswordAndLogin(this.loginTextbox.Text, this.passwordTextbox.Text))
-            {                
-                MainWindow mainWindow = new MainWindow(_viewModel);
+            {
+                // SetAdminMode();
+                
+                MainWindow mainWindow = new MainWindow(_viewModel);                
                 mainWindow.Show();
                 this.Close();
             }
@@ -44,6 +47,13 @@ namespace Hospital_View
             {
                 statusTextblock.Text = "Nieprawidłowy login lub hasło";
             }
+        }
+
+        private void SetAdminMode()
+        {
+            _viewModel.IsLoggedUserAdmin = _viewModel.Employees
+                .Where(x => x.Login == this.loginTextbox.Text)
+                .Select(x => (x as Employee).IsAdmin).Single();
         }
     }
 }

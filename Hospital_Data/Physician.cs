@@ -44,8 +44,6 @@ namespace Hospital_Data
                 OnPropertyChanged("LicenceNumber");
             }
         }
-
-
         #endregion
 
         public Physician()
@@ -65,12 +63,24 @@ namespace Hospital_Data
             this.licenceNumber = _physician.LicenceNumber;
         }
 
-        public Physician(Employee _employee, string _specialization = null, string _licNumber = null) : base(_employee)
+        public Physician(Employee _employee) : base(_employee)
         {
-            this.specialization = _specialization;
-            this.licenceNumber = _licNumber == null ? 0 : int.Parse(_licNumber);
+            if(_employee is Physician)
+            {
+                this.specialization = ((Physician)_employee).Specialization;
+                this.licenceNumber = ((Physician)_employee).LicenceNumber;
+            }            
         }
 
+        public void AddDuty(DateTime date)
+        {
+            this.Duties.Add(new Duty(date));
+        }
+
+        public void RemoveDuty(DateTime date)
+        {
+            this.Duties.Remove(Duties.Where(x => x.Date == date).Single());
+        }
 
     }
 }

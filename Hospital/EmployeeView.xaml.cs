@@ -30,11 +30,11 @@ namespace Hospital_View
             _viewModel = viewModel;
             if (employee == null)
             {
-                _employeeViewModel = new EmployeeViewModel(this._viewModel.IsEditModeOff);
+                _employeeViewModel = new EmployeeViewModel(_viewModel);
             }
             else
             {
-                _employeeViewModel = new EmployeeViewModel(this._viewModel.IsEditModeOff, employee);
+                _employeeViewModel = new EmployeeViewModel(_viewModel, employee);
             }
             this.DataContext = _employeeViewModel;
             SetBindingForControls(this._employeeViewModel.TargetObjectType);
@@ -48,52 +48,52 @@ namespace Hospital_View
         }
         private void OnlyLettersAllowed(object sender, TextCompositionEventArgs e)
         {
-            var regex = new Regex("[^a-zA-Z łćśńźżóęą]");
+            var regex = new Regex("[^a-zA-Z łćśńźżóęą]+");
             e.Handled = regex.IsMatch(e.Text);
         }
 
         private void ConfirmAdd_ButtonClick(object sender, RoutedEventArgs e)
-        {           
-            switch (this._employeeViewModel.TargetObjectType)
+        {
+            if (_employeeViewModel.AddNewEmployee())
             {
-                case "lekarz":
-                    _viewModel.Employees.Add(this._employeeViewModel.Physician);
-                    break;
-                case "pielęgniarka":
-                    _viewModel.Employees.Add(this._employeeViewModel.Nurse);
-                    break;
-                default:
-                    _viewModel.Employees.Add(this._employeeViewModel.Employee);
-                    break;
+                MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);
+                //_viewModel.AdjustViewForExtendedEmployeesList(this._employeeViewModel.Employee);
+                Reset_ButtonClick(this, e);
             }
-            MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);
-            //dodać walidację : taki pracownik już istnieje, by edytować jego dane wybierz w widoku głównym... blabla                      
         }
 
         private void ConfirmEdit_Button_Click(object sender, RoutedEventArgs e)
         {
-            //walidacja: czy cokolwiek się zmieniło?
-            //przeładować aktualnego jako nowego, usunąć starego
-            this._viewModel.Employees.Remove(this._viewModel.Employees.Where(x => x.PESEL == this._employeeViewModel.EmployeeBackup.PESEL).Single());
-            ConfirmAdd_ButtonClick(this, e);
-            //this._viewModel.Employees.Add(this._employeeViewModel.Employee);
+            if (_employeeViewModel.HasTextChanged)
+            {
+                this._viewModel.Employees.Remove(this._viewModel.Employees.Where(x => x.PESEL == this._employeeViewModel.EmployeeBackup.PESEL).Single());
+                _employeeViewModel.AddNewEmployee();
+            }
+            this.Close();
         }
 
         private void Cancel_ButtonClick(object sender, RoutedEventArgs e)
         {
-            if (this._viewModel.IsEditModeOff == false)
-            {     
-                //walidacja: czy cokolwiek się zmieniło?
-                //jeśli tak - pytajka, czy zachować wprowadzone zmiany
-                //tak: confirm edit, nie: poniższe
-                this._employeeViewModel.Employee = this._employeeViewModel.EmployeeBackup;
+            if (this._viewModel.IsEditModeOff == false && this._employeeViewModel.HasTextChanged)
+            {
+                switch(MessageBox.Show("Czy zachować wprowadzone zmiany?", "Wprowadzono zmiany w formularzu", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                {
+                    case MessageBoxResult.Yes:
+                        this._viewModel.Employees.Remove(this._viewModel.Employees.Where(x => x.PESEL == this._employeeViewModel.EmployeeBackup.PESEL).Single());
+                        _employeeViewModel.AddNewEmployee();
+                        break;
+                    case MessageBoxResult.No:
+                        this._employeeViewModel.Employee = this._employeeViewModel.EmployeeBackup;
+                        break;
+                }                
             }
             this.Close();
         }
 
         private void JobTitleCB_DropDownClosed(object sender, EventArgs e)
         {
-            this._employeeViewModel.TargetObjectType = this.JobTitle_CB.Text; // tutaj jest problem z przejściem z lekarza na cokolwiek innego
+            this._employeeViewModel.HasTextChanged = true;
+            this._employeeViewModel.TargetObjectType = this.JobTitle_CB.Text;
             this._employeeViewModel.ReorganizeDataAccordingToEmployeeType(this._employeeViewModel.TargetObjectType, this._employeeViewModel.Employee);
             SetBindingForControls(this._employeeViewModel.TargetObjectType);
             SetOptionOfPhysicianPropertiesEdit();
@@ -101,7 +101,7 @@ namespace Hospital_View
 
         private void Delete_ButtonClick(object sender, RoutedEventArgs e)
         {
-            switch(MessageBox.Show("Ta operacja spowoduje trwałe usunięcie danych pracownika z systemu. Czy kontynuować?", "Usuwanie danych", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            switch (MessageBox.Show("Ta operacja spowoduje trwałe usunięcie danych pracownika z systemu. Czy kontynuować?", "Usuwanie danych", MessageBoxButton.YesNo, MessageBoxImage.Warning))
             {
                 case MessageBoxResult.Yes:
                     this._viewModel.Employees.Remove(this._viewModel.Employees
@@ -110,7 +110,7 @@ namespace Hospital_View
                     break;
                 case MessageBoxResult.No:
                     break;
-            }            
+            }
         }
 
         private void Reset_ButtonClick(object sender, RoutedEventArgs e)
@@ -122,8 +122,10 @@ namespace Hospital_View
         private void SetOptionOfPhysicianPropertiesEdit()
         {
             this.Specialization_CB.IsEnabled = this.LicNumber_TB.IsEnabled =
-                this._employeeViewModel.TargetObjectType == "lekarz" ? true : false;            
+                this._employeeViewModel.TargetObjectType == "lekarz" ? true : false;
         }
+
+
 
         private void SetBindingForControls(string mode = null)
         {
@@ -166,6 +168,17 @@ namespace Hospital_View
             bd.Mode = BindingMode.TwoWay;
             bd.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             return bd;
+        }
+
+        private void TextChangedEventHandler(object sender, TextChangedEventArgs e)
+        {
+            _employeeViewModel.HasTextChanged = true;
+        }
+
+        private void SpecializationChanged(object sender, DataTransferEventArgs e)
+        {
+            _employeeViewModel.HasTextChanged = true;
+
         }
     }
 }

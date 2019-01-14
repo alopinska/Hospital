@@ -28,7 +28,7 @@ namespace Hospital_View
             InitializeComponent();
             this._viewModel = vm;
             this.DataContext = _viewModel;
-            this.deleteDuty_Button.IsEnabled = this.addDuty_Button.IsEnabled = false;
+            SetInitialWindowState();
 
         }
 
@@ -37,11 +37,14 @@ namespace Hospital_View
             this.Close();
         }
 
-        private void Refresh()
+        private void SetInitialWindowState()
         {
-            ICollectionView view = CollectionViewSource.GetDefaultView(listView.ItemsSource);
-            view.Refresh();
+            this.deleteDuty_Button.IsEnabled = this.Edit_Button.IsEnabled = false;
+            SetDatePickerState();
+            statusTextBlock.Text = _viewModel.IsLoggedUserAdmin ? "Wybierz pracownika z listy by edytować jego dane i/ lub dyżury (dyżury pełnią tylko lekarze i pielęgniarki)." :
+                "Wybierz pracownika z listy, by wyświetlić terminy jego dyżurów (dyżurują tylko lekarze i pielęgniarki naszego szpitala).";
         }
+
 
         private void Logout_ButtonClick(object sender, RoutedEventArgs e)
         {
@@ -49,7 +52,6 @@ namespace Hospital_View
             var entryView = new Entry();
             this.Close();
             entryView.Show();
-
         }
 
         private void Add_ButtonClick(object sender, RoutedEventArgs e)
@@ -57,24 +59,48 @@ namespace Hospital_View
             this._viewModel.IsEditModeOff = true;
             var employeeData = new EmployeeView(this._viewModel);
             employeeData.ShowDialog();
-
         }
 
         private void Edit_ButtonClick(object sender, RoutedEventArgs e)
         {
+            if (this._viewModel.SelectedEmployee != null)
+            {
+                this._viewModel.IsEditModeOff = false;
+                var employeeData = new EmployeeView(this._viewModel, _viewModel.SelectedEmployee);
+                employeeData.ShowDialog();
+            }
 
-            this._viewModel.IsEditModeOff = false;            
-            var employeeData = new EmployeeView(this._viewModel, this.listView.SelectedItem as Employee);
-            employeeData.ShowDialog();
+        } 
+        
+        private void ListSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.Edit_Button.IsEnabled = this.listView.SelectedItem == null ? false : true;            
+            _viewModel.SelectedEmployee = this.listView.SelectedItem as Employee;
+            SetDatePickerState();
+            _viewModel.SetListOfDutiesForSelectedEmployee();
+        }        
 
-
+        private void DutySelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.deleteDuty_Button.IsEnabled = this.dutiesListView.SelectedItem == null ? false : true;
+            _viewModel.SelectedDuty = this.dutiesListView.SelectedItem as Duty;
         }
 
-       
-
-        private void SelectedDate_Click(object sender, SelectionChangedEventArgs e)
+        private void DatePickerClosed(object sender, RoutedEventArgs e)
         {
-            this.deleteDuty_Button.IsEnabled = this.addDuty_Button.IsEnabled = true;            
+            if (_viewModel.ValidateDutyTerm((DateTime)this.addDuty_dtPicker.SelectedDate))
+            {
+                _viewModel.AddDuty((DateTime)this.addDuty_dtPicker.SelectedDate);
+            }
+        }
+
+        private void SetDatePickerState()
+        {
+            if (_viewModel.SelectedEmployee is Physician || _viewModel.SelectedEmployee is Nurse)
+            {
+                this.addDuty_dtPicker.IsEnabled = true;
+            }
+            else this.addDuty_dtPicker.IsEnabled = false;
         }
     }
 }

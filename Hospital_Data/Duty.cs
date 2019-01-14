@@ -23,13 +23,21 @@ namespace Hospital_Data
             }
         }
 
+        public string DateStringFormat
+        {
+            get
+            {
+                return string.Format("{0:D}", date);
+            }
+        }
+
         public Duty()
         {
 
         }
         public Duty(DateTime _date)
         {
-            this.Date = _date;               
+            this.date = _date;               
         }
         [field: NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;
