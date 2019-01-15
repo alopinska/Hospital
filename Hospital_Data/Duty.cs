@@ -10,8 +10,7 @@ namespace Hospital_Data
     [Serializable]
     public class Duty : INotifyPropertyChanged 
     {
-        private DateTime date;  
-        
+        private DateTime date;          
 
         public DateTime Date
         {
@@ -22,7 +21,6 @@ namespace Hospital_Data
                 OnPropertyChanged("Date");
             }
         }
-
         public string DateStringFormat
         {
             get
@@ -39,6 +37,8 @@ namespace Hospital_Data
         {
             this.date = _date;               
         }
+
+
         [field: NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;
 

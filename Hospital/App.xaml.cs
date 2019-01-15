@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Test
+namespace HospitalManagementSystem
 {
     /// <summary>
     /// Logika interakcji dla klasy App.xaml

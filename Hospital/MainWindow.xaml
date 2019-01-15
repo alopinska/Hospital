@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Hospital_View"
         xmlns:Hospital_Data="clr-namespace:Hospital_Data;assembly=Hospital_Data" x:Class="Hospital_View.MainWindow"
         mc:Ignorable="d"
-        Title="" WindowStyle="ThreeDBorderWindow">
+        Title="Dane personelu szpitala" WindowStyle="ThreeDBorderWindow" Closing="OnClosing">
 
 
     <Window.Background>
@@ -20,6 +20,9 @@
             <Setter Property="Visibility" Value="Collapsed" />
         </Style>
     </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo Description="Hospital Management System"/>
+    </Window.TaskbarItemInfo>
 
     <DockPanel Margin="5">
 
@@ -50,9 +53,9 @@
                       IsManipulationEnabled="True" SelectionChanged="ListSelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Width="100" Header="Imię" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Width="100" Header="Nazwisko" DisplayMemberBinding="{Binding Surname}"/>
-                        <GridViewColumn Width="100" Header="Stanowisko" DisplayMemberBinding="{Binding JobTitle}"/>
+                        <GridViewColumn Width="120" Header="Imię" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="120" Header="Nazwisko" DisplayMemberBinding="{Binding Surname}"/>
+                        <GridViewColumn Width="140" Header="Stanowisko" DisplayMemberBinding="{Binding JobTitle}"/>
                         <GridViewColumn Width="100" Header="Specjalizacja" DisplayMemberBinding="{Binding Specialization}"/>
                         <GridViewColumn Width="100" Header="PESEL" DisplayMemberBinding="{Binding PESEL}"/>
                         <GridViewColumn Width="100" Header="PWZ" DisplayMemberBinding="{Binding LicenceNumber}"/>
@@ -70,7 +73,7 @@
                     </Style>
                 </ListView.Style>
             </ListView>
-            <ListView x:Name="listViewDefault" 
+            <ListView x:Name="listViewDefault"                       
                       Grid.Column="0" 
                       Grid.Row="2" 
                       Grid.RowSpan="4" 
@@ -80,9 +83,9 @@
                       IsManipulationEnabled="True" SelectionChanged="ListSelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Width="100" Header="Imię" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Width="100" Header="Nazwisko" DisplayMemberBinding="{Binding Surname}"/>
-                        <GridViewColumn Width="100" Header="Stanowisko" DisplayMemberBinding="{Binding JobTitle}"/>
+                        <GridViewColumn Width="120" Header="Imię" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="120" Header="Nazwisko" DisplayMemberBinding="{Binding Surname}"/>
+                        <GridViewColumn Width="140" Header="Stanowisko" DisplayMemberBinding="{Binding JobTitle}"/>
                         <GridViewColumn Width="100" Header="Specjalizacja" DisplayMemberBinding="{Binding Specialization}"/>
                     </GridView>
                 </ListView.View>
@@ -107,12 +110,12 @@
                       IsManipulationEnabled="True" SelectionChanged="DutySelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
-                        <GridViewColumn DisplayMemberBinding="{Binding DateStringFormat}"/>
+                        <GridViewColumn Width="210" DisplayMemberBinding="{Binding DateStringFormat}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
             <Label Margin="5 0" Padding="0" Content="Nasz Zespół:" Grid.Column="0" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
-            <Label Margin="5 0" Padding="0" ContentStringFormat="Dyżury: {0}" Content="{Binding Path=SelectedEmployee.FullName}" Grid.Column="1" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
+            <Label x:Name="dutyLabel" Margin="5 0" Padding="0" Grid.Column="1" Grid.Row="1" FontWeight="Bold" FontFamily="Arial Black" VerticalAlignment="Bottom"/>
 
             <StackPanel Margin="5 5" Grid.Column="1" Grid.Row="5">
                 <StackPanel.Style>
@@ -126,7 +129,7 @@
                 </StackPanel.Style>
                 <Label Margin="15 0" Content="Dodaj dyżur:" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" />
                 <DatePicker x:Name="addDuty_dtPicker" Height="25" Width="140" CalendarClosed="DatePickerClosed"/>
-                <Button x:Name="deleteDuty_Button" Height="25" Width="140" Content="Usuń dyżur z listy" Margin="5 5 5 10" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Button x:Name="deleteDuty_Button" Height="25" Width="140" Content="Usuń dyżur z listy" Margin="5 5 5 10" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="DeleteDutyButtonClick"/>
                 <Label Margin="15 0" Content="Zarządzanie danymi personelu:" VerticalAlignment="Bottom" FontFamily="Arial Black" FontSize="11" />
                 <Button x:Name="Add_Button" Height="25" Width="140" Content="Nowy pracownik" Margin="5 5 5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Add_ButtonClick"/>
                 <Button x:Name="Edit_Button" Height="25" Width="140" Content="Edycja danych" Margin="5 5 5 5" VerticalAlignment="Bottom" FontSize="11" FontFamily="Arial Black" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="Edit_ButtonClick"/>

@@ -24,7 +24,7 @@ namespace Hospital_Data
         public Nurse()
         {
 
-        }    
+        } 
 
         public Nurse(Nurse nurse) : base(nurse)
         {

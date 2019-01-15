@@ -13,7 +13,7 @@ namespace Hospital_Data
 {
     public static class DataDispatcher
     {
-        static string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "StaffData.dat";
+        static readonly string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "StaffData.dat";
         public static List<Employee> DeserializeData()
         {
             var list = new List<Employee>();

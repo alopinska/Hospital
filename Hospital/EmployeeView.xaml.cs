@@ -41,23 +41,32 @@ namespace Hospital_View
             SetOptionOfPhysicianPropertiesEdit();
         }
 
+        #region Controls settings
+        private void SetOptionOfPhysicianPropertiesEdit()
+        {
+            this.Specialization_CB.IsEnabled = this.LicNumber_TB.IsEnabled =
+                this._employeeViewModel.TargetObjectType == "lekarz" ? true : false;
+        }
+
         private void OnlyNumbersAllowed(object sender, TextCompositionEventArgs e)
         {
             var regex = new Regex("[^0-9.-]+");
             e.Handled = regex.IsMatch(e.Text);
         }
+
         private void OnlyLettersAllowed(object sender, TextCompositionEventArgs e)
         {
-            var regex = new Regex("[^a-zA-Z łćśńźżóęą]+");
+            var regex = new Regex("[^a-zA-Z łćśńźżóęąŁŚŻŹ]+");
             e.Handled = regex.IsMatch(e.Text);
         }
+        #endregion
 
+        #region Buttons and ComboBoxes actions
         private void ConfirmAdd_ButtonClick(object sender, RoutedEventArgs e)
         {
             if (_employeeViewModel.AddNewEmployee())
             {
-                MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);
-                //_viewModel.AdjustViewForExtendedEmployeesList(this._employeeViewModel.Employee);
+                MessageBox.Show("Dodano nowego pracownika do systemu", "Operacja zakończona", MessageBoxButton.OK, MessageBoxImage.Information);                
                 Reset_ButtonClick(this, e);
             }
         }
@@ -66,7 +75,9 @@ namespace Hospital_View
         {
             if (_employeeViewModel.HasTextChanged)
             {
-                this._viewModel.Employees.Remove(this._viewModel.Employees.Where(x => x.PESEL == this._employeeViewModel.EmployeeBackup.PESEL).Single());
+                int index = _viewModel.Employees.IndexOf(_viewModel.Employees.Where(x => x.PESEL == this._employeeViewModel.EmployeeBackup.PESEL).Single());
+               
+                this._viewModel.Employees.RemoveAt(index);
                 _employeeViewModel.AddNewEmployee();
             }
             this.Close();
@@ -118,18 +129,12 @@ namespace Hospital_View
             this._employeeViewModel.Employee = new Employee();
             SetBindingForControls(this._employeeViewModel.TargetObjectType = null);
         }
+        #endregion
 
-        private void SetOptionOfPhysicianPropertiesEdit()
-        {
-            this.Specialization_CB.IsEnabled = this.LicNumber_TB.IsEnabled =
-                this._employeeViewModel.TargetObjectType == "lekarz" ? true : false;
-        }
-
-
-
+        #region Binding setters
         private void SetBindingForControls(string mode = null)
         {
-            string targetObjectType = mode == null ? " " : mode;
+            string targetObjectType = mode ?? " ";
 
             BindingOperations.SetBinding(this.Name_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "Name"));
             BindingOperations.SetBinding(this.Surname_TB, TextBox.TextProperty, AddNewBindingWithOptions(targetObjectType, "Surname"));
@@ -169,6 +174,7 @@ namespace Hospital_View
             bd.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             return bd;
         }
+        #endregion
 
         private void TextChangedEventHandler(object sender, TextChangedEventArgs e)
         {
@@ -178,7 +184,6 @@ namespace Hospital_View
         private void SpecializationChanged(object sender, DataTransferEventArgs e)
         {
             _employeeViewModel.HasTextChanged = true;
-
         }
     }
 }

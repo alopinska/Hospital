@@ -14,11 +14,9 @@ namespace Hospital_View
 
     public class ViewModel : BaseViewModel, INotifyPropertyChanged
     {
-
         public Employee SelectedEmployee { get; set; }
         public Hospital Hospital { get; set; }
         public Duty SelectedDuty { get; set; }
-
 
         public bool IsLoggedUserAdmin { get; set; } = true;
         public bool IsEditModeOff { get; set; }
@@ -28,7 +26,7 @@ namespace Hospital_View
         {
             get
             {
-                return _employees;
+                return _employees; ;
             }
             set
             {
@@ -60,10 +58,7 @@ namespace Hospital_View
             SetListOfDutiesForSelectedEmployee();
         }
 
-        private void LoadDataForListView()
-        {
-            Employees = new ObservableCollection<Employee>(Hospital.Staff);
-        }       
+       
 
         public void AddDuty(DateTime date)
         {
@@ -73,43 +68,38 @@ namespace Hospital_View
                 {
                     ((Physician)SelectedEmployee).AddDuty(date);
                 }
-                else if (SelectedEmployee is Physician)
+                else if (SelectedEmployee is Nurse)
                 {
-                    ((Physician)SelectedEmployee).AddDuty(date);
+                    ((Nurse)SelectedEmployee).AddDuty(date);
                 }
                 Duties.Add(new Duty(date));
             }
-
         }
 
+        public void RemoveDuty()
+        {
+            if(this.SelectedDuty != null)
+            {
+                if (SelectedEmployee is Physician)
+                {
+                    ((Physician)SelectedEmployee).RemoveDuty(SelectedDuty.Date);
+                }
+                else if (SelectedEmployee is Nurse)
+                {
+                    ((Nurse)SelectedEmployee).RemoveDuty(SelectedDuty.Date);
+                }
+                Duties.Remove(SelectedDuty);
+            }
+        }
 
         public void SetListOfDutiesForSelectedEmployee()
         {            
             if (SelectedEmployee != null)
             {
                 Duties.Clear();
-                if (SelectedEmployee is Nurse) this.Duties = new ObservableCollection<Duty>(((Nurse)SelectedEmployee).Duties);
-                else if (SelectedEmployee is Physician) this.Duties = new ObservableCollection<Duty>(((Physician)SelectedEmployee).Duties);
-            }
-        }    
-
-
-        public bool VerifyPasswordAndLogin(string login, string password)
-        {
-            //return true;
-            if (this.Hospital.Staff.Where(x => x.Login == login)
-              .Where(x => x.Password == password).Any())
-            {
-                var _empl = this.Hospital.Staff.Where(x => x.Login == login)
-              .Where(x => x.Password == password).FirstOrDefault();
-
-                //this.IsLoggedUserAdmin = _empl.IsAdmin ? true : false;
-                this.SelectedEmployee = _empl;
-                return true;
-            }
-            else
-            {
-                return true;
+                if (SelectedEmployee is Nurse) this.Duties = new ObservableCollection<Duty>(((Nurse)SelectedEmployee).Duties.OrderBy(x => x.Date));
+                else if (SelectedEmployee is Physician) this.Duties = new ObservableCollection<Duty>(((Physician)SelectedEmployee).Duties.OrderBy(x => x.Date));
+                
             }
         }
 
@@ -117,19 +107,43 @@ namespace Hospital_View
         {
             this.Hospital.Staff = this.Employees.ToList();
             this.Hospital.SerializeData();
-        }        
+        }
+
+        private void LoadDataForListView()
+        {
+            Employees = new ObservableCollection<Employee>(Hospital.Staff.OrderBy(x => x.Surname));           
+        }
+
+        #region Data input validation
+        public bool VerifyPasswordAndLogin(string login, string password)
+        {            
+            if (this.Hospital.Staff.Where(x => x.Login == login)
+              .Where(x => x.Password == password).Any())
+            {
+                var _empl = this.Hospital.Staff.Where(x => x.Login == login)
+              .Where(x => x.Password == password).FirstOrDefault();
+
+                this.IsLoggedUserAdmin = _empl.IsAdmin ? true : false;
+                this.SelectedEmployee = _empl;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }              
 
         public bool ValidateDutyTerm(DateTime date)
         {
-            if (!VerifyDoubledDutyDate(date)) ReturnErrorMsg("TheSameDay");
-            if (!VerifyMaxNumberOfDutiesCondition(date)) ReturnErrorMsg("TooManyDuties");
-            if (!VerifyDayByDayCondition(date)) ReturnErrorMsg("DayByDay");
+            if (!VerifyDoubledDutyDate(date)) return ReturnErrorMsg("TheSameDay");
+            if (!VerifyMaxNumberOfDutiesCondition(date)) return ReturnErrorMsg("TooManyDuties");
+            if (!VerifyDayByDayCondition(date)) return ReturnErrorMsg("DayByDay");
             if (SelectedEmployee is Physician)
             {
-                if (!VerifySingleSpecializationOnDutyPerDay(date)) ReturnErrorMsg("Specialization");
+                if (!VerifySingleSpecializationOnDutyPerDay(date)) return ReturnErrorMsg("Specialization");
             }
             return true;
-        }
+        }       
 
         private bool VerifyMaxNumberOfDutiesCondition(DateTime date)
         {
@@ -198,7 +212,7 @@ namespace Hospital_View
             MessageBox.Show($"{msgContent}", "Operacja wstrzymana", MessageBoxButton.OK, MessageBoxImage.Stop);
             return false;
         }
-
+        #endregion
     }
 }
 

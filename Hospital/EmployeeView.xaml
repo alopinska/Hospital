@@ -7,6 +7,12 @@
         xmlns:Hospital_Data="clr-namespace:Hospital_Data;assembly=Hospital_Data" x:Class="Hospital_View.EmployeeView"
         mc:Ignorable="d"
         Title="Dane pracownika" Height="380" Width="500" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF6F9392" Offset="0"/>
+            <GradientStop Color="#FFDADCDC" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
 
     <StackPanel Margin="15" Tag="{Binding}">
         <TextBlock Text="Imię:" Margin="5 0" />
@@ -66,8 +72,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="Cancel_Button" Grid.Column="0" Height="30" Margin="15 10" Content="Anuluj" Click="Cancel_ButtonClick" />
-            <Button x:Name="Reset_Button" Grid.Column="1" Height="30" Margin="15 10" Content="Wyczyść pola" Click="Reset_ButtonClick">
+            <Button x:Name="Cancel_Button" Grid.Column="0" Height="30" Margin="15 10" Content="Anuluj" Click="Cancel_ButtonClick" Background="#FF6F9392" />
+            <Button x:Name="Reset_Button" Grid.Column="1" Height="30" Margin="15 10" Content="Wyczyść pola" Click="Reset_ButtonClick" Background="#FF6F9392">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Style.Triggers>
@@ -78,7 +84,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button x:Name="Delete_Button" Grid.Column="1" Height="30" Margin="15 10" Content="Usuń dane z systemu" Click="Delete_ButtonClick">
+            <Button x:Name="Delete_Button" Grid.Column="1" Height="30" Margin="15 10" Content="Usuń dane z systemu" Click="Delete_ButtonClick" Background="#FF6F9392">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Style.Triggers>
@@ -89,7 +95,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button x:Name="ConfirmAdd_Button" Grid.Column="2" Height="30" Margin="15 10" Content="Dodaj" Click="ConfirmAdd_ButtonClick">
+            <Button x:Name="ConfirmAdd_Button" Grid.Column="2" Height="30" Margin="15 10" Content="Dodaj" Click="ConfirmAdd_ButtonClick" Background="#FF6F9392">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Style.Triggers>
@@ -100,7 +106,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button x:Name="ConfirmEdit_Button" Grid.Column="2" Height="30" Margin="15 10" Content="Zatwierdź zmiany" Click="ConfirmEdit_Button_Click">
+            <Button x:Name="ConfirmEdit_Button" Grid.Column="2" Height="30" Margin="15 10" Content="Zatwierdź zmiany" Click="ConfirmEdit_Button_Click" Background="#FF6F9392">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Style.Triggers>

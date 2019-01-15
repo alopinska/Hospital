@@ -38,18 +38,19 @@ namespace Hospital_View
         {
             this.viewModel = vm;
             this.Employee = new Employee();
-            this.TargetObjectType = employee == null ? null : employee.JobTitle;
+            this.IsCreatingNewEmployee = vm.IsEditModeOff;
+            this.TargetObjectType = employee?.JobTitle;
             if (employee != null)
             {
                 if (employee is Physician)
                 {
                     this.Employee = this.Physician = new Physician((Physician)employee);
-                    this.EmployeeBackup = DataDispatcher.CloneBySerialization<Employee>((Physician)employee);
+                    this.EmployeeBackup = DataDispatcher.CloneBySerialization<Physician>(employee as Physician);
                 }
                 else if (employee is Nurse)
                 {
                     this.Employee = this.Nurse = new Nurse((Nurse)employee);
-                    this.EmployeeBackup = DataDispatcher.CloneBySerialization<Employee>((Nurse)employee);
+                    this.EmployeeBackup = DataDispatcher.CloneBySerialization<Nurse>(employee as Nurse);
                 }
                 else
                 {
@@ -73,14 +74,7 @@ namespace Hospital_View
                     this.Employee = new Employee(_emp);
                     break;
             }
-        }
-
-        public bool ValidateInput(ObservableCollection<Employee> Employees, Employee employee)
-        {
-            if (!VerifyEmptyFields(employee)) return false;
-            if (!VerifyKeyData(employee)) return false;
-            return true;
-        }
+        }       
 
         public bool AddNewEmployee()
         {
@@ -110,16 +104,23 @@ namespace Hospital_View
             }
         }
 
+        #region Data input validation
+        public bool ValidateInput(ObservableCollection<Employee> Employees, Employee employee)
+        {
+            if (!VerifyEmptyFields(employee)) return false;
+            if (!VerifyKeyData(employee)) return false;
+            return true;
+        }
+
         private bool VerifyKeyData(Employee employee)
         {
             if (this.viewModel.Employees.Where(x => x.PESEL == employee.PESEL).Any()) return ReturnErrorMsg("PESELdoubled");
             if (this.viewModel.Employees.Where(x => x.Login == employee.Login).Any()) return ReturnErrorMsg("LoginDoubled");
             if (employee is Physician)
             {
-                foreach (var item in this.viewModel.Employees)
-                {
-                    if (((Physician)item).LicenceNumber == ((Physician)employee).LicenceNumber) return ReturnErrorMsg("PWZdoubled");
-                }
+                if (viewModel.Employees.Where(x => x is Physician)
+                     .Where(x => (x as Physician).LicenceNumber == ((Physician)employee).LicenceNumber)
+                     .Any()) return ReturnErrorMsg("PWZdoubled");            
             }
             return true;
         }
@@ -182,5 +183,6 @@ namespace Hospital_View
             MessageBox.Show($"{msgContent}", "Operacja wstrzymana", MessageBoxButton.OK, MessageBoxImage.Stop);
             return false;
         }
+        #endregion
     }
 }

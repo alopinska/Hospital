@@ -49,13 +49,7 @@ namespace Hospital_Data
         public Physician()
         {
 
-        }
-        //public Physician(string _name, string _surname, long _pesel, string _login, string _password, string _jobtitle, bool _isAdmin, string _specialization, int _licNumber)
-        //    : base(_name, _surname, _pesel, _login, _password, _jobtitle, _isAdmin)
-        //{
-        //    this.Specialization = _specialization;
-        //    this.LicenceNumber = _licNumber;
-        //}
+        }     
 
         public Physician(Physician _physician) :base(_physician)
         {

@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hospital_View"
         mc:Ignorable="d"    
-        Title="" Height="270" Width="300" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Cursor="Hand" WindowStyle="None" Background="{x:Null}" BorderBrush="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" OpacityMask="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}">
+        Title="" Height="286.499" Width="300" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Cursor="Hand" WindowStyle="None" Background="{x:Null}" BorderBrush="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" OpacityMask="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo Description="HospitalManagementSystem"/>
+    </Window.TaskbarItemInfo>
 
     <Border Padding="15">
         <Border.Background>
@@ -23,20 +26,21 @@
                 <TextBlock HorizontalAlignment="Left" FontFamily="Imprint MT Shadow" VerticalAlignment="Center" FontSize="14">
                     Wirtualny Szpital <LineBreak/>
                     im. Solidnie Potłuczonych                    
-                </TextBlock>           
+                </TextBlock>
+                <Image Grid.Column="1" Source="Hospital_Icon.ico"/>
 
             </Grid>
             <TextBlock Height="20" Text="Login:" HorizontalAlignment="Left" FontWeight="Bold"/>
             <TextBox x:Name="loginTextbox" Height="30" Padding="5" Margin="0 5"/>
             <TextBlock Height="20" Text="Hasło:" VerticalAlignment="Bottom" FontWeight="Bold"/>
-            <TextBox x:Name="passwordTextbox" Height="30" Padding="5" Margin="0 5"/>
+            <PasswordBox x:Name="passwordBox" Height="30" Padding="5" Margin="0 5" PasswordChar="*"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="confirmButton" Grid.Column="1" Height="30" Width="100" Margin="0 5" Content="ZALOGUJ" Background="#FF6F9392" Click="Confirm_ButtonClick" FontWeight="Bold"/>
-                <Button x:Name="exitButton" Grid.Column="0" Height="30" Width="100" Margin="0 5" Content="WYJŚCIE" Background="#FF6F9392" Click="Exit_ButtonClick" FontWeight="Bold"/>
+                <Button x:Name="confirmButton" IsDefault="True" Grid.Column="1" Height="30" Width="100" Margin="0 5" Content="ZALOGUJ" Background="#FF6F9392" Click="Confirm_ButtonClick" FontWeight="Bold"/>
+                <Button x:Name="exitButton" IsCancel="True"  Grid.Column="0" Height="30" Width="100" Margin="0 5" Content="WYJŚCIE" Background="#FF6F9392" Click="Exit_ButtonClick" FontWeight="Bold"/>
             </Grid>
             <TextBlock x:Name="statusTextblock" Height="25" Margin="0 10 15 0" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontStyle="Italic"/>
 

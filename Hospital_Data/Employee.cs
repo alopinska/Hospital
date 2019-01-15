@@ -17,8 +17,7 @@ namespace Hospital_Data
         private string login;
         private string password;
         private string jobTitle;
-        private bool isAdmin;      
-        
+        private bool isAdmin;         
 
         #region Properties
         public string Name
@@ -84,33 +83,13 @@ namespace Hospital_Data
                 OnPropertyChanged("IsAdmin");
             }
         }
-        public string FullName
-        {
-            get
-            {
-                return string.Format("{0} {1}", this.name, this.surname);
-            }
-        }
-
-        
-       
         #endregion
 
         public Employee()
         {
 
         }
-
-        //public Employee(string _name, string _surname, long _pesel, string _login, string _password, string _jobtitle, bool _isAdmin)
-        //{
-        //    this.name = _name;
-        //    this.surname = _surname;
-        //    this.pesel = _pesel;
-        //    this.login = _login;
-        //    this.password = _password;
-        //    this.jobTitle = _jobtitle;
-        //    this.isAdmin = _isAdmin;
-        //}
+       
         public Employee(Employee _employee)
         {
             this.name = _employee.Name;
@@ -120,7 +99,6 @@ namespace Hospital_Data
             this.password = _employee.Password;
             this.jobTitle = _employee.JobTitle;
             this.isAdmin = _employee.IsAdmin;
-
         }
 
         [field: NonSerializedAttribute()]
