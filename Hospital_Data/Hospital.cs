@@ -13,6 +13,8 @@ using System.Windows;
 
 namespace Hospital_Data
 {
+    /// <summary></summary>
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
     [Serializable]
     public class Hospital : INotifyPropertyChanged
     {
@@ -25,22 +27,27 @@ namespace Hospital_Data
                 staff = value;
                 OnPropertyChanged("Staff");
             }
-        } 
+        }
 
 
+        /// <summary>Initializes a new instance of the <see cref="Hospital"/> class.</summary>
         public Hospital()
         {
             Staff = DataDispatcher.DeserializeData();
         }
 
+        /// <summary>Serializes the data.</summary>
         public void SerializeData()
         {
             DataDispatcher.SerializeData(this.Staff);
         }
 
+        /// <summary>Occurs when a property value changes.</summary>
         [field: NonSerializedAttribute()]
-        public event PropertyChangedEventHandler PropertyChanged;  
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>Called when [property changed].</summary>
+        /// <param name="_property">The property.</param>
         private void OnPropertyChanged(string _property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_property));

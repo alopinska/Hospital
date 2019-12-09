@@ -11,9 +11,15 @@ using System.Xml.Serialization;
 
 namespace Hospital_Data
 {
+    /// <summary>Bunch of static methods.</summary>
+    /// <summary>Data aggregation using serialization.</summary>
     public static class DataDispatcher
     {
         static readonly string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "StaffData.dat";
+
+        /// <summary>Deserializes the data from binary format.</summary>
+        /// <summary>The serialized file should be in the project's build location.</summary>
+        /// <returns>List of the Employee objects</returns>
         public static List<Employee> DeserializeData()
         {
             var list = new List<Employee>();
@@ -33,6 +39,9 @@ namespace Hospital_Data
             return list;
         }
 
+        /// <summary>Serializes the data to binary format.</summary>
+        /// <summary>The serialized destination should be in the project's build location.</summary>
+        /// <param name="list">The Employee list.</param>
         public static void SerializeData(List<Employee> list)
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -48,8 +57,12 @@ namespace Hospital_Data
             {
                 MessageBox.Show(e.Message, "Błąd serializacji", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }  
-        
+        }
+
+        /// <summary>Clones the by serialization.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="emp">The emp.</param>
+        /// <returns></returns>
         public static T CloneBySerialization<T>(T emp)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));

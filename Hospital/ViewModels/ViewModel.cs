@@ -12,16 +12,40 @@ using System.Windows;
 namespace Hospital_View
 {
 
+    /// <summary></summary>
+    /// <seealso cref="Hospital_View.BaseViewModel" />
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
     public class ViewModel : BaseViewModel, INotifyPropertyChanged
     {
+        /// <summary>Gets or sets the selected employee.</summary>
+        /// <value>The selected employee.</value>
         public Employee SelectedEmployee { get; set; }
+
+        /// <summary>Gets or sets the hospital.</summary>
+        /// <value>The hospital.</value>
         public Hospital Hospital { get; set; }
+
+        /// <summary>Gets or sets the selected duty.</summary>
+        /// <value>The selected duty.</value>
         public Duty SelectedDuty { get; set; }
 
+
+        /// <summary>Gets or sets a value indicating whether this instance is logged user admin.</summary>
+        /// <value>
+        ///   <c>true</c> if this instance is logged user admin; otherwise, <c>false</c>.</value>
         public bool IsLoggedUserAdmin { get; set; } = true;
+
+        /// <summary>Gets or sets a value indicating whether this instance is edit mode off.</summary>
+        /// <value>
+        ///   <c>true</c> if this instance is edit mode off; otherwise, <c>false</c>.</value>
         public bool IsEditModeOff { get; set; }
 
+
+        /// <summary>The employees</summary>
         private ObservableCollection<Employee> _employees;
+
+        /// <summary>Gets or sets the employees.</summary>
+        /// <value>The employees.</value>
         public ObservableCollection<Employee> Employees
         {
             get
@@ -35,7 +59,13 @@ namespace Hospital_View
             }
         }
 
+
+        /// <summary>The duties</summary>
         private ObservableCollection<Duty> _duties = new ObservableCollection<Duty>();
+
+
+        /// <summary>Gets or sets the duties.</summary>
+        /// <value>The duties.</value>
         public ObservableCollection<Duty> Duties
         {
             get
@@ -49,6 +79,7 @@ namespace Hospital_View
             }
         }
 
+        /// <summary>Initializes a new instance of the <see cref="ViewModel"/> class.</summary>
         public ViewModel()
         {
             this.SelectedDuty = new Duty();
@@ -58,8 +89,10 @@ namespace Hospital_View
             SetListOfDutiesForSelectedEmployee();
         }
 
-       
 
+
+        /// <summary>Adds the duty.</summary>
+        /// <param name="date">The date.</param>
         public void AddDuty(DateTime date)
         {
             if (SelectedEmployee != null)
@@ -76,6 +109,7 @@ namespace Hospital_View
             }
         }
 
+        /// <summary>Removes the duty.</summary>
         public void RemoveDuty()
         {
             if(this.SelectedDuty != null)
@@ -92,6 +126,10 @@ namespace Hospital_View
             }
         }
 
+        /// <summary>
+        /// Sets the list of duties for selected employee.
+        /// </summary>
+        /// <para>Objects are ordered by <c>Duty.Date</c>.</para>
         public void SetListOfDutiesForSelectedEmployee()
         {            
             if (SelectedEmployee != null)
@@ -103,12 +141,14 @@ namespace Hospital_View
             }
         }
 
+        /// <summary>Serializes all data.</summary>
         public void SerializeAllData()
         {
             this.Hospital.Staff = this.Employees.ToList();
             this.Hospital.SerializeData();
         }
 
+        /// <summary>Loads the data for ListView.</summary>
         private void LoadDataForListView()
         {
             Employees = new ObservableCollection<Employee>(Hospital.Staff.OrderBy(x => x.Surname));           

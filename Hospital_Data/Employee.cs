@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace Hospital_Data
 {
+    /// <summary>
+    /// <para>Class marked for serialization</para>
+    /// <para>Generic Employee class, inherited by the Nurse class and Physician class</para>
+    /// </summary>
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
     [Serializable]
     public class Employee : INotifyPropertyChanged
     {
@@ -85,11 +90,14 @@ namespace Hospital_Data
         }
         #endregion
 
+        /// <summary>Initializes a new instance of the <see cref="Employee"/> class.</summary>
         public Employee()
         {
 
         }
-       
+
+        /// <summary>Initializes a new instance of the <see cref="Employee"/> class.</summary>
+        /// <param name="_employee">The employee.</param>
         public Employee(Employee _employee)
         {
             this.name = _employee.Name;
@@ -101,8 +109,12 @@ namespace Hospital_Data
             this.isAdmin = _employee.IsAdmin;
         }
 
+        /// <summary>Occurs when a property value changes.</summary>
         [field: NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>Called when [property changed].</summary>
+        /// <param name="_property">The property.</param>
         protected void OnPropertyChanged([CallerMemberName] string _property = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_property));
