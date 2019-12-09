@@ -22,9 +22,11 @@ namespace Hospital_Data
         private string login;
         private string password;
         private string jobTitle;
-        private bool isAdmin;         
+        private bool isAdmin;
 
         #region Properties
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
         public string Name
         {
             get { return name; }
@@ -34,6 +36,8 @@ namespace Hospital_Data
                 OnPropertyChanged("Name");
             }
         }
+        /// <summary>Gets or sets the surname.</summary>
+        /// <value>The surname.</value>
         public string Surname
         {
             get { return surname; }
@@ -43,6 +47,8 @@ namespace Hospital_Data
                 OnPropertyChanged("Surname");
             }
         }
+        /// <summary>Gets or sets the pesel.</summary>
+        /// <value>The pesel.</value>
         public long PESEL
         {
             get { return pesel; }
@@ -52,6 +58,8 @@ namespace Hospital_Data
                 OnPropertyChanged("PESEL");
             }
         }
+        /// <summary>Gets or sets the login.</summary>
+        /// <value>The login.</value>
         public string Login
         {
             get { return login; }
@@ -61,6 +69,8 @@ namespace Hospital_Data
                 OnPropertyChanged("Login");
             }
         }
+        /// <summary>Gets or sets the password.</summary>
+        /// <value>The password.</value>
         public string Password
         {
             get { return password; }
@@ -70,6 +80,8 @@ namespace Hospital_Data
                 OnPropertyChanged("Password");
             }
         }
+        /// <summary>Gets or sets the job title.</summary>
+        /// <value>The job title.</value>
         public string JobTitle
         {
             get { return jobTitle; }
@@ -79,6 +91,9 @@ namespace Hospital_Data
                 OnPropertyChanged("JobTitle");
             }
         }
+        /// <summary>Gets or sets a value indicating whether this instance is admin.</summary>
+        /// <value>
+        ///   <c>true</c> if this instance is admin; otherwise, <c>false</c>.</value>
         public bool IsAdmin
         {
             get { return isAdmin; }
