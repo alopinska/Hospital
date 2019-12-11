@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,7 @@ namespace Hospital_View
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string statusInfoHelper;
         private ViewModel _viewModel;
         public MainWindow(ViewModel vm)
         {
@@ -34,6 +36,8 @@ namespace Hospital_View
         #region Button actions
         private void DeleteDutyButtonClick(object sender, RoutedEventArgs e)
         {
+            this.statusInfoHelper = $"anulowanie dyżuru z dn. {_viewModel.SelectedDuty.DateStringFormat}";
+            DisplayStatusChange();
             _viewModel.RemoveDuty();
         }
 
@@ -63,12 +67,44 @@ namespace Hospital_View
 
         private void DatePickerClosed(object sender, RoutedEventArgs e)
         {
-            if (_viewModel.ValidateDutyTerm((DateTime)this.addDuty_dtPicker.SelectedDate))
+            try
             {
-                _viewModel.AddDuty((DateTime)this.addDuty_dtPicker.SelectedDate);
+                if (_viewModel.ValidateDutyTerm((DateTime)this.addDuty_dtPicker.SelectedDate))
+                {
+                    this.statusInfoHelper = $"nowy dyżur w dniu {(DateTime)this.addDuty_dtPicker.SelectedDate}";
+                    DisplayStatusChange();
+                    _viewModel.AddDuty((DateTime)this.addDuty_dtPicker.SelectedDate);                    
+                }
+                else return;
             }
-            else return;
+            catch (Exception)
+            {
+                MessageBox.Show("Aby zapisać dyżur, należy wskazać datę");
+            }
+            
         }
+
+        private void DisplayStatusChange()
+        {
+            Thread shortlyDisplayedInfo = new Thread(ChangeStatusBarContent);
+            shortlyDisplayedInfo.Start();
+        }
+
+        private async void ChangeStatusBarContent()
+        {
+            await Dispatcher.BeginInvoke(new Action(() => UpdateStatusInfo($"Przetwarzanie zmian: {statusInfoHelper}")));
+            await Task.Delay(2500);
+            await Dispatcher.BeginInvoke(new Action(() => UpdateStatusInfo($"Wprowadzono zmiany: {statusInfoHelper}")));
+            await Task.Delay(2000);
+            await Dispatcher.BeginInvoke(new Action(() => UpdateStatusInfo(_viewModel.IsLoggedUserAdmin ? "Wybierz pracownika z listy by edytować jego dane i/ lub dyżury (dyżury pełnią tylko lekarze i pielęgniarki)." :
+                "Wybierz pracownika z listy, by wyświetlić terminy jego dyżurów (dyżurują tylko lekarze i pielęgniarki naszego szpitala).")));
+        }
+
+        private void UpdateStatusInfo(string msg)
+        {
+            statusTextBlock.Text = msg;
+        }
+
         #endregion
 
         #region Layout manipulation logic
